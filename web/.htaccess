@@ -1,0 +1,13 @@
+RewriteEngine On
+
+RewriteBase /
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)\?*$ index.php/$1 [L,QSA]
+
+# AuthType Basic
+# AuthName "Restricted Files"
+# (Following line optional)
+# AuthBasicProvider file
+# AuthUserFile /var/www/passwd/passwords
+# Require user petroayrik

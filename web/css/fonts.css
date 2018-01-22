@@ -1,0 +1,106 @@
+@font-face {
+    font-family: 'Tahoma';
+    font-style: normal;
+    src: url(../fonts/Tahoma.eot);
+    src: url(../fonts/Tahoma.eot) format('embedded-opentype'), url(../fonts/Tahoma.woff) format('woff2'), url(../fonts/Tahoma.woff) format('woff'), url(../fonts/Tahoma.ttf) format('truetype')
+}
+
+@font-face {
+    font-family: 'Tahoma';
+    font-style: normal;
+    font-weight: 400;
+    src: url(../fonts/Tahoma.eot);
+    src: url(../fonts/Tahoma.eot) format('embedded-opentype'), url(../fonts/Tahoma.woff) format('woff2'), url(../fonts/Tahoma.woff) format('woff'), url(../fonts/Tahoma.ttf) format('truetype')
+}
+
+@font-face {
+    font-family: 'Tahoma';
+    font-style: Bold;
+    font-weight: 700;
+    src: url(../fonts/TahomaBold.eot);
+    src: url(../fonts/TahomaBold.eot) format('embedded-opentype'), url(../fonts/TahomaBold.woff) format('woff2'), url(../fonts/TahomaBold.woff) format('woff'), url(../fonts/TahomaBold.ttf) format('truetype')
+}
+
+@font-face {
+    font-family: 'bmifont';
+    font-style: normal;
+    src: url(../fonts/bmifont.eot);
+    src: url(../fonts/bmifont.eot) format('embedded-opentype'), url(../fonts/bmifont.woff) format('woff2'), url(../fonts/bmifontt.woff) format('woff'), url(../fonts/bmifont.ttf) format('truetype')
+}
+
+@font-face {
+    font-family: 'bmifont';
+    font-style: normal;
+    font-weight: 400;
+    src: url(../fonts/bmifont.eot);
+    src: url(../fonts/bmifont.eot) format('embedded-opentype'), url(../fonts/bmifont.woff) format('woff2'), url(../fonts/bmifont.woff) format('woff'), url(../fonts/bmifont.ttf) format('truetype')
+}
+
+@font-face {
+    font-family: 'bmifont';
+    font-style: Bold;
+    font-weight: 700;
+    src: url(../fonts/bmifont.eot);
+    src: url(../fonts/bmifont.eot) format('embedded-opentype'), url(../fonts/bmifont.woff) format('woff2'), url(../fonts/bmifont.woff) format('woff'), url(../fonts/bmifont.ttf) format('truetype')
+}
+
+@font-face {
+    font-family: 'Droid Arabic Kufi';
+    font-style: normal;
+    font-weight: 700;
+    src: url(../fonts/DroidKufi-Bold.eot);
+    src: url(../fonts/DroidKufi-Bold.eot?#iefix) format('embedded-opentype'),
+    url(../fonts/DroidKufi-Bold.woff2) format('woff2'),
+    url(../fonts/DroidKufi-Bold.woff) format('woff'),
+    url(../fonts/DroidKufi-Bold.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: 'Droid Arabic Naskh';
+    font-style: normal;
+    font-weight: 400;
+    src: url(../fonts/DroidNaskh-Regular.eot);
+    src: url(../fonts/DroidNaskh-Regular.eot?#iefix) format('embedded-opentype'),
+    url(../fonts/DroidNaskh-Regular.woff2) format('woff2'),
+    url(../fonts/DroidNaskh-Regular.woff) format('woff'),
+    url(../fonts/DroidNaskh-Regular.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: 'Droid Arabic Naskh';
+    font-style: normal;
+    font-weight: 700;
+    src: url(../fonts/DroidNaskh-Bold.eot);
+    src: url(../fonts/DroidNaskh-Bold.eot?#iefix) format('embedded-opentype'),
+    url(../fonts/DroidNaskh-Bold.woff2) format('woff2'),
+    url(../fonts/DroidNaskh-Bold.woff) format('woff'),
+    url(../fonts/DroidNaskh-Bold.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: 'iransans';
+    font-style: normal;
+    font-weight: 400;
+    src: url(../fonts/IRAN-Sans.ttf);
+}
+
+@font-face {
+    font-family: 'iransans';
+    font-style: Bold;
+    font-weight: 700;
+    src: url(../fonts/IRAN-Sans-Bold.ttf);
+}
+
+@font-face {
+    font-family: 'roboto';
+    font-style: normal;
+    font-weight: 400;
+    src: url(../fonts/Roboto-Medium.ttf);
+}
+
+@font-face {
+    font-family: 'roboto';
+    font-style: Bold;
+    font-weight: 700;
+    src: url(../fonts/Roboto-Bold.ttf);
+}

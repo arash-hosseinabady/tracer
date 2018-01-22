@@ -1,0 +1,200 @@
+html,
+body {
+    height: 100%;
+}
+
+.wrap {
+    min-height: 100%;
+    height: auto;
+    margin: 0 auto -60px;
+    padding: 0 0 60px;
+}
+
+.wrap > .container {
+    padding: 70px 15px 20px;
+}
+
+.footer {
+    height: 60px;
+    background-color: #f5f5f5;
+    border-top: 1px solid #ddd;
+    padding-top: 20px;
+}
+
+.jumbotron {
+    text-align: center;
+    background-color: transparent;
+}
+
+.jumbotron .btn {
+    font-size: 21px;
+    padding: 14px 24px;
+}
+
+.not-set {
+    color: #c55;
+    font-style: italic;
+}
+
+/* add sorting icons to gridview sort links */
+a.asc:after, a.desc:after {
+    position: relative;
+    top: 1px;
+    display: inline-block;
+    font-family: 'Glyphicons Halflings';
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    padding-left: 5px;
+}
+
+a.asc:after {
+    content: /*"\e113"*/ "\e151";
+}
+
+a.desc:after {
+    content: /*"\e114"*/ "\e152";
+}
+
+.sort-numerical a.asc:after {
+    content: "\e153";
+}
+
+.sort-numerical a.desc:after {
+    content: "\e154";
+}
+
+.sort-ordinal a.asc:after {
+    content: "\e155";
+}
+
+.sort-ordinal a.desc:after {
+    content: "\e156";
+}
+
+.grid-view th {
+    white-space: nowrap;
+}
+
+.hint-block {
+    display: block;
+    margin-top: 5px;
+    color: #999;
+}
+
+.error-summary {
+    color: #a94442;
+    background: #fdf7f7;
+    border-left: 3px solid #eed3d7;
+    padding: 10px 20px;
+    margin: 0 0 15px 0;
+}
+
+/****************************************************************************
+*****************************************************************************/
+body, .form-control {
+    font-family: "iransans", "roboto";
+    font-size: 12px;
+}
+
+.filters * {
+    font-size: 10px
+}
+
+.filters select {
+    padding: 0
+}
+
+;
+
+h1, h2, h3, h4, h5, h6, th, nav * {
+    font-family: "iransans", "roboto";
+}
+
+.grid-view table tr th, .grid-view table tr td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+table.detail-view {
+    margin-bottom: 0;
+}
+
+.nav-tabs {
+    margin-bottom: 15px
+}
+
+.page-header .toolbar {
+    margin-top: 20px;
+}
+
+#screenLock {
+    background-color: black;
+    opacity: 0.7;
+    filter: alpha(opacity=70);
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 2000;
+}
+
+#loadingGif {
+    display: none;
+    z-index: 2001;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    color: white;
+    text-align: center;
+}
+
+#loadingGif .gif {
+    background: url(../img/loading.gif) no-repeat scroll 50% 50%;
+    width: 128px;
+    height: 128px;
+}
+
+#msg-box {
+    position: absolute;
+    z-index: 2001;
+    display: none;
+    width: 90%;
+    left: 100%;
+    top: 10%;
+    transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+}
+
+.tms-page-header, .lte-hide-title {
+    border-bottom: 1px solid #eee;
+    margin-bottom: 15px;
+}
+
+.tms-toolbar {
+    padding-top: 20px;
+}
+
+.bootstrap-timepicker input {
+    border-radius: 0 !important;
+    -webkit-border-radius: 0 !important;
+    -moz-border-radius: 0 !important;
+    border-top-right-radius: 4px !important;
+    border-bottom-right-radius: 4px !important;
+}
+
+.bootstrap-timepicker-widget table {
+    direction: ltr
+}
+
+@media (min-width: 768px) {
+    .navbar-right .dropdown-menu {
+        left: auto;
+        right: 0;
+    }
+}
