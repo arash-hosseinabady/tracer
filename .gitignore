@@ -19,6 +19,9 @@ Thumbs.db
 /vendor/webvimark/*
 !/vendor/webvimark/module-user-management
 
+/web/assets/*
+!/web/assets
+
 # composer itself is not needed
 composer.phar
 
