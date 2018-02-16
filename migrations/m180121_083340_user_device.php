@@ -4,30 +4,20 @@ use yii\db\Migration;
 
 class m180121_083340_user_device extends Migration
 {
-    public function safeUp()
-    {
+    const TABLE_NAME = 'user_device';
 
-    }
-
-    public function safeDown()
-    {
-        echo "m180121_083340_user_device cannot be reverted.\n";
-
-        return false;
-    }
-
-    /*
-    // Use up()/down() to run migration code without a transaction.
     public function up()
     {
-
+        $this->createTable(self::TABLE_NAME, [
+            'id' => $this->primaryKey(),
+            'user_id' => $this->integer(),
+            'device_id' => $this->integer(),
+            'created_at' => $this->integer(),
+        ]);
     }
 
     public function down()
     {
-        echo "m180121_083340_user_device cannot be reverted.\n";
-
-        return false;
+        $this->dropTable(self::TABLE_NAME);
     }
-    */
 }

@@ -13,14 +13,15 @@ $config = [
     'components' => [
         'urlManager' => [
             'enablePrettyUrl' => true,
-            'showScriptName' => false,
             'enableStrictParsing' => false,
+            'showScriptName' => false,
             'rules' => [
                 'POST <controller:[\w-]+>s' => '<controller>/create',
                 '<controller:[\w-]+>s' => '<controller>/index',
                 'PUT <controller:[\w-]+>/<id:\d+>' => '<controller>/update',
                 'DELETE <controller:[\w-]+>/<id:\d+>' => '<controller>/delete',
                 '<controller:[\w-]+>/<id:\d+>' => '<controller>/view',
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'api'],
             ],
         ],
         'formatter' => [
@@ -33,6 +34,20 @@ $config = [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => '6o0TakbMHgcHC7nl55ROD7XMFUs9BLOO',
+            'parsers' => [
+                'application/json' => 'yii\web\JsonParser',
+            ],
+        ],
+        'response' => [
+            // ...
+            'formatters' => [
+                \yii\web\Response::FORMAT_JSON => [
+                    'class' => 'yii\web\JsonResponseFormatter',
+                    'prettyPrint' => YII_DEBUG, // use "pretty" output in debug mode
+                    'encodeOptions' => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,
+                    // ...
+                ],
+            ],
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -81,7 +96,10 @@ $config = [
         ],
         'gridview' => [
             'class' => '\kartik\grid\Module'
-        ]
+        ],
+        'v1' => [
+            'class' => 'app\module\api\v1\Module',
+        ],
     ],
 ];
 

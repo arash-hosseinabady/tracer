@@ -20,7 +20,7 @@ $user = Yii::$app->user;
     <meta charset="<?= Yii::$app->charset ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?= Html::csrfMetaTags() ?>
-    <?php $this->title = Yii::t('app', 'Support System'); ?>
+    <?php $this->title = Yii::t('app', 'Trace System'); ?>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
 </head>
@@ -41,7 +41,7 @@ $user = Yii::$app->user;
         'encodeLabels' => false,
         'items' => [
             [
-                'label' => Yii::t('app', 'Frontend'),
+                'label' => !$user->isGuest ? $user->username : Yii::t('app', 'User'),
                 'items' => [
                     ['label' => Yii::t('app', 'Logout'), 'url' => ['/user-management/auth/logout']],
                     ['label' => Yii::t('app', 'Change own password'), 'url' => ['/user-management/auth/change-own-password']],
@@ -51,7 +51,17 @@ $user = Yii::$app->user;
             [
                 'label' => Yii::t('app', 'User Management'),
                 'items' => UserManagementModule::menuItems(),
-                'visible' => (User::hasRole('Admin') || User::hasRole('supportAdmin')),
+                'visible' => $user->isSuperadmin,
+            ],
+            [
+                'label' => Yii::t('app', 'Device List'),
+                'url' => '/device',
+                'visible' => !$user->isGuest,
+            ],
+            [
+                'label' => Yii::t('app', 'User Device'),
+                'url' => '/user-device',
+                'visible' => $user->isSuperadmin,
             ],
         ],
     ]);

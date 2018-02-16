@@ -12,12 +12,11 @@ nbproject
 # windows thumbnail cache
 Thumbs.db
 
+# database file
+config/db.php
+
 # composer vendor dir
 /vendor/
-!/vendor/webvimark
-
-/vendor/webvimark/*
-!/vendor/webvimark/module-user-management
 
 /web/assets/*
 !/web/assets
