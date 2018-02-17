@@ -18,6 +18,10 @@ use yii\behaviors\TimestampBehavior;
  * @property int $command1
  * @property int $command2
  * @property int $created_at
+ *
+ * @property Device $device
+ * @property $createdAt
+ * @property $timeFormatted
  */
 class LocationInfo extends \yii\db\ActiveRecord
 {
@@ -36,7 +40,8 @@ class LocationInfo extends \yii\db\ActiveRecord
     {
         return [
             ['device_id', 'required'],
-            [['time', 'device_id', 'latitude', 'longitude', 'speed', 'course', 'command1', 'command2', 'created_at'], 'integer'],
+            [['time', 'device_id', 'created_at'], 'integer'],
+            [['latitude', 'longitude', 'speed', 'course', 'command1', 'command2'], 'string'],
         ];
     }
 
@@ -72,11 +77,16 @@ class LocationInfo extends \yii\db\ActiveRecord
 
     public function getDevice()
     {
-        return $this->hasOne(Device::className(), ['id' => 'device_id   ']);
+        return $this->hasOne(Device::className(), ['id' => 'device_id']);
     }
 
     public function getCreatedAt()
     {
         return Yii::$app->jdate->date('Y-m-d H:i:s', $this->created_at);
+    }
+
+    public function getTimeFormatted()
+    {
+        return Yii::$app->jdate->date('Y-m-d H:i:s', $this->time);
     }
 }

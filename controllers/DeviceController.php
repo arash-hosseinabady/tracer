@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\DeviceConfig;
 use app\models\UserDevice;
 use Yii;
 use app\models\Device;
@@ -66,17 +67,23 @@ class DeviceController extends Controller
     public function actionCreate()
     {
         $model = new Device();
+        $deviceConfig = new DeviceConfig();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             $modelUserDevice = new UserDevice();
             $modelUserDevice->user_id = Yii::$app->user->id;
             $modelUserDevice->device_id = $model->id;
             $modelUserDevice->save();
-            return $this->redirect('index');
+
+            $deviceConfig->device_id = $model->id;
+            if ($deviceConfig->load(Yii::$app->request->post()) and $deviceConfig->save()) {
+                return $this->redirect('index');
+            }
         }
 
         return $this->render('create', [
             'model' => $model,
+            'deviceConfig' => $deviceConfig,
         ]);
     }
 
@@ -90,13 +97,17 @@ class DeviceController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $deviceConfig = DeviceConfig::findOne(['device_id' => $id]);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect('index');
+            if ($deviceConfig->load(Yii::$app->request->post()) && $deviceConfig->save()) {
+                return $this->redirect('index');
+            }
         }
 
         return $this->render('update', [
             'model' => $model,
+            'deviceConfig' => $deviceConfig,
         ]);
     }
 

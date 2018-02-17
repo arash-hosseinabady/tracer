@@ -12,6 +12,8 @@ use yii\helpers\ArrayHelper;
  * @property string $name
  * @property string $serial
  * @property string $sim_number
+ *
+ * @property DeviceConfig $config
  */
 class Device extends \yii\db\ActiveRecord
 {
@@ -55,5 +57,28 @@ class Device extends \yii\db\ActiveRecord
             ->all();
 
         return ArrayHelper::map($list, 'id', 'name');
+    }
+
+    static function getUserDevice()
+    {
+        $list = self::find()
+            ->innerJoin(UserDevice::tableName(), 'device.id = user_device.device_id')
+            ->where(['user_device.user_id' => Yii::$app->user->id])
+            ->select(['device.id', 'device.name'])
+            ->asArray()
+            ->all();
+
+        return ArrayHelper::map($list, 'id', 'name');
+    }
+
+    public function getConfig()
+    {
+        return $this->hasOne(DeviceConfig::className(), ['device_id' => 'id']);
+    }
+
+    public function afterDelete()
+    {
+        DeviceConfig::deleteAll(['device_id' => $this->id]);
+        parent::afterDelete();
     }
 }

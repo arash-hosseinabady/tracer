@@ -5,6 +5,7 @@ use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Device */
+/* @var $deviceConfig app\models\DeviceConfig */
 
 $this->title = Yii::t('app', 'Create Device');
 //$this->params['breadcrumbs'][] = ['label' => 'Devices', 'url' => ['index']];
@@ -16,6 +17,7 @@ $this->title = Yii::t('app', 'Create Device');
 
     <?= $this->render('_form', [
         'model' => $model,
+        'deviceConfig' => $deviceConfig,
     ]) ?>
 
 </div>

@@ -5,6 +5,7 @@ namespace app\controllers;
 use Yii;
 use app\models\LocationInfo;
 use app\models\LocationInfoSearch;
+use yii\helpers\Json;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -59,7 +60,31 @@ class LocationInfoController extends Controller
 
     public function actionDetails()
     {
-        return $this->render('details');
+        $model = new LocationInfo();
+
+        if (Yii::$app->request->isAjax) {
+            $postData = Yii::$app->request->post();
+            $output = [];
+            $locationInfo = $model::findAll(['device_id' => $postData['device']]);
+            if ($locationInfo) {
+                foreach ($locationInfo as $value) {
+                    $output[] = [
+                        'device_id' => $value->device_id,
+                        'latitude' => $value->latitude,
+                        'longitude' => $value->longitude,
+                        'time' => $value->timeFormatted,
+                        'speed' => $value->speed,
+                        'icon' => ($value->speed > $value->device->config['speed']) ? '/img/markers/red_MarkerA.png' : '/img/markers/green_MarkerA.png',
+                        'course' => $value->course,
+                    ];
+                }
+            }
+            return Json::encode($output);
+        }
+
+        return $this->render('details', [
+            'model' => $model,
+        ]);
     }
 
     /**
