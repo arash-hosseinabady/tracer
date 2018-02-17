@@ -13,7 +13,7 @@ nbproject
 Thumbs.db
 
 # database file
-config/db.php
+/config/db.php
 
 # composer vendor dir
 /vendor/
