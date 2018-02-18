@@ -49,7 +49,6 @@ class LocationInfoController extends Controller
      * Displays a single LocationInfo model.
      * @param integer $id
      * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionView($id)
     {
@@ -58,7 +57,7 @@ class LocationInfoController extends Controller
         ]);
     }
 
-    public function actionDetails()
+    public function actionTrace()
     {
         $model = new LocationInfo();
 
@@ -82,7 +81,7 @@ class LocationInfoController extends Controller
             return Json::encode($output);
         }
 
-        return $this->render('details', [
+        return $this->render('trace', [
             'model' => $model,
         ]);
     }
@@ -98,11 +97,11 @@ class LocationInfoController extends Controller
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
+        } else {
+            return $this->render('create', [
+                'model' => $model,
+            ]);
         }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
     }
 
     /**
@@ -110,7 +109,6 @@ class LocationInfoController extends Controller
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionUpdate($id)
     {
@@ -118,11 +116,11 @@ class LocationInfoController extends Controller
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
+        } else {
+            return $this->render('update', [
+                'model' => $model,
+            ]);
         }
-
-        return $this->render('update', [
-            'model' => $model,
-        ]);
     }
 
     /**
@@ -130,7 +128,6 @@ class LocationInfoController extends Controller
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionDelete($id)
     {
@@ -150,8 +147,8 @@ class LocationInfoController extends Controller
     {
         if (($model = LocationInfo::findOne($id)) !== null) {
             return $model;
+        } else {
+            throw new NotFoundHttpException('The requested page does not exist.');
         }
-
-        throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
     }
 }

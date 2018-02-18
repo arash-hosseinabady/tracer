@@ -8,16 +8,20 @@ use yii\behaviors\TimestampBehavior;
 /**
  * This is the model class for table "location_info".
  *
- * @property int $id
- * @property int $time
- * @property int $device_id
- * @property int $latitude
- * @property int $longitude
- * @property int $speed
- * @property int $course
- * @property int $command1
- * @property int $command2
- * @property int $created_at
+ * @property integer $id
+ * @property integer $time
+ * @property integer $device_id
+ * @property string $latitude
+ * @property string $longitude
+ * @property string $speed
+ * @property string $course
+ * @property string $battery_voltage
+ * @property string $door
+ * @property string $shock_sensor
+ * @property integer $motor
+ * @property string $command1
+ * @property string $command2
+ * @property integer $created_at
  *
  * @property Device $device
  * @property $createdAt
@@ -39,9 +43,8 @@ class LocationInfo extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            ['device_id', 'required'],
-            [['time', 'device_id', 'created_at'], 'integer'],
-            [['latitude', 'longitude', 'speed', 'course', 'command1', 'command2'], 'string'],
+            [['time', 'device_id', 'motor', 'created_at'], 'integer'],
+            [['latitude', 'longitude', 'speed', 'course', 'battery_voltage', 'door', 'shock_sensor', 'command1', 'command2'], 'string', 'max' => 32],
         ];
     }
 
@@ -58,6 +61,10 @@ class LocationInfo extends \yii\db\ActiveRecord
             'longitude' => Yii::t('app', 'Longitude'),
             'speed' => Yii::t('app', 'Speed'),
             'course' => Yii::t('app', 'Course'),
+            'battery_voltage' => Yii::t('app', 'Battery Voltage'),
+            'door' => Yii::t('app', 'Door'),
+            'shock_sensor' => Yii::t('app', 'Shock Sensor'),
+            'motor' => Yii::t('app', 'Motor'),
             'command1' => Yii::t('app', 'Command1'),
             'command2' => Yii::t('app', 'Command2'),
             'created_at' => Yii::t('app', 'Created At'),

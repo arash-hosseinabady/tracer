@@ -29,6 +29,14 @@ use yii\widgets\ActiveForm;
 
     <?php // echo $form->field($model, 'course') ?>
 
+    <?php // echo $form->field($model, 'battery_voltage') ?>
+
+    <?php // echo $form->field($model, 'door') ?>
+
+    <?php // echo $form->field($model, 'shock_sensor') ?>
+
+    <?php // echo $form->field($model, 'motor') ?>
+
     <?php // echo $form->field($model, 'command1') ?>
 
     <?php // echo $form->field($model, 'command2') ?>

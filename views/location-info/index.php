@@ -18,7 +18,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <p>
         <?= Html::a(Yii::t('app', 'Create Location Info'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
-
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -30,11 +29,15 @@ $this->params['breadcrumbs'][] = $this->title;
             'device_id',
             'latitude',
             'longitude',
-            //'speed',
-            //'course',
-            //'command1',
-            //'command2',
-            //'created_at',
+            // 'speed',
+            // 'course',
+            // 'battery_voltage',
+            // 'door',
+            // 'shock_sensor',
+            // 'motor',
+            // 'command1',
+            // 'command2',
+            // 'created_at',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

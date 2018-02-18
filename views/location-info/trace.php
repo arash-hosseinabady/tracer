@@ -14,7 +14,6 @@ use kartik\widgets\Select2;
     <div class="location-info-view">
 
         <?php $form = ActiveForm::begin([
-//        'action' => ['index'],
             'method' => 'get',
         ]); ?>
 
@@ -33,6 +32,9 @@ use kartik\widgets\Select2;
 
         <div class="alert alert-danger" id="device-selection"
              style="display: none;"><?= Yii::t('app', 'Please select a device!') ?></div>
+
+        <div class="alert alert-danger" id="alert-nodata"
+             style="display: none;"><?= Yii::t('app', 'No Data!') ?></div>
 
         <?php ActiveForm::end(); ?>
 
@@ -60,6 +62,7 @@ $js = <<< JS
 var markers = [];
 var infoWindowContent = [];
 var icons = [];
+var device;
 
 // Load initialize function
 // google.maps.event.addDomListener(window, 'load', initMap);
@@ -67,59 +70,75 @@ var icons = [];
 $('#search').on('click', function(e) {
     e.preventDefault();
     $('#device-selection').hide();
-    var device = $('#$deviceId').val();
-    if (device) {
-        $.ajax({
-            type: 'post',
-            data: {device: device},
-            url: "/location-info/details",
-            success: function(data) {
-                var res = $.parseJSON(data);
-                $.each(res, function(index, value) {
-                    markers[index] = [
-                        '"' + index + '"',
-                        value['latitude'],
-                        value['longitude']
-                    ];
-                    icons[index] = value['icon'];
-                    infoWindowContent[index] = [
-                        '<div class="info_content">' +
-                        '<p>speed: ' + value['speed'] + '</p>' +
-                        '<p>course: ' + value['course'] + '</p>' +
-                        '<p>time: ' + value['time'] + '</p>' +
-                        '</div>'
-                        ];
-                });
-                // google.maps.event.addDomListener(window, 'load', initMap);
-                initMap();
-            }
-        });
+    if ($('#$deviceId').val()) {
+        ajaxTrace();
     } else {
         $('#device-selection').show();
     }
 });
 
+// var refreshTimeout = setInterval(function(){
+//     if (device) {
+//         ajaxTrace(); 
+//     }
+// }, 30000);
+
+function ajaxTrace()
+{
+    device = $('#$deviceId').val();
+    $('#alert-nodata').hide();
+    if (device) {
+        $.ajax({
+            type: 'post',
+            data: {device: device},
+            url: "/location-info/trace",
+            success: function(data) {
+                var res = $.parseJSON(data);
+                markers = [];
+                icons = [];
+                infoWindowContent = [];
+                if (res.length) {
+                    $.each(res, function(index, value) {
+                        markers[index] = [
+                            '"' + index + '"',
+                            value['latitude'],
+                            value['longitude']
+                        ];
+                        icons[index] = value['icon'];
+                        infoWindowContent[index] = [
+                            '<div class="info_content">' +
+                            '<p>speed: ' + value['speed'] + '</p>' +
+                            '<p>course: ' + value['course'] + '</p>' +
+                            '<p>time: ' + value['time'] + '</p>' +
+                            '</div>'
+                            ];
+                    });
+                    // google.maps.event.addDomListener(window, 'load', initMap);
+                    initMap();
+                } else {
+                    $('#alert-nodata').show();
+                }
+            }
+        });
+    }
+}
+
 function initMap() {
     var map;
-    var triangleCoords = [
-          {lat: 1.01, lng: 1.18},
-          {lat: 1.003, lng: 1.18},
-          {lat: 1, lng: 1.2},
-          {lat: 1.01, lng: 1.2}
-        ];
-    var bounds = new google.maps.LatLngBounds(
-        // new google.maps.LatLng(1.01, 1.18),
-        // new google.maps.LatLng(1.003, 1.18),
-        // new google.maps.LatLng(1, 1.2),
-        // new google.maps.LatLng(1.01, 1.2)
-    );
+    // var triangleCoords = [
+    //       {lat: 1.01, lng: 1.18},
+    //       {lat: 1.003, lng: 1.18},
+    //       {lat: 1, lng: 1.2},
+    //       {lat: 1.01, lng: 1.2}
+    //     ];
+    var bounds = new google.maps.LatLngBounds();
 
     var mapOptions = {
-        mapTypeId: 'roadmap',
+        // mapTypeId: 'roadmap',
         mapTypeControl: false,
         streetViewControl: false,
-        // zoom: 5
-        // center: new google.maps.LatLng(1.1, 1.19),
+        // center: {lat: 40, lng: 41},
+        // zoom: 15,
         // bounds: bounds
     };
 
@@ -130,17 +149,17 @@ function initMap() {
 
     // Add multiple markers to map
     var infoWindow = new google.maps.InfoWindow(), marker, i;
-    var icon = '';
+    // var icon = '';
 
-    var bermudaTriangle = new google.maps.Polygon({
-          paths: triangleCoords,
-          strokeColor: '#FF0000',
-          strokeOpacity: 0.8,
-          strokeWeight: 2,
-          fillColor: '#ff0000',
-          fillOpacity: 0.35
-        });
-        bermudaTriangle.setMap(map);
+    // var bermudaTriangle = new google.maps.Polygon({
+    //       paths: triangleCoords,
+    //       strokeColor: '#FF0000',
+    //       strokeOpacity: 0.8,
+    //       strokeWeight: 2,
+    //       fillColor: '#ff0000',
+    //       fillOpacity: 0.35
+    //     });
+    //     bermudaTriangle.setMap(map);
 
     // Place each marker on the map
     for( i = 0; i < markers.length; i++ ) {
@@ -170,14 +189,14 @@ function initMap() {
                 infoWindow.open(map, marker);
             }
         })(marker, i));
-
+        
         // Center the map to fit all markers on the screen
-        map.fitBounds(bounds);
     }
+    map.fitBounds(bounds);
 
     // Set zoom level
-    var boundsListener = google.maps.event.addListener((map), 'bounds_changed', function(event) {
-        // this.setZoom(5);
+    var boundsListener = google.maps.event.addListener(map, 'idle', function(event) {
+        map.setZoom(10);
         google.maps.event.removeListener(boundsListener);
     });
 
@@ -186,14 +205,14 @@ function initMap() {
     //    placeMarker(event.latLng);
     // });
 
-    function placeMarker(location) {
-        console.log(location.lat());
-        console.log(location.lng());
-        marker = new google.maps.Marker({
-            position: location,
-            map: map
-        });
-    }
+    // function placeMarker(location) {
+    //     console.log(location.lat());
+    //     console.log(location.lng());
+    //     marker = new google.maps.Marker({
+    //         position: location,
+    //         map: map
+    //     });
+    // }
 
     // bermudaTriangle.addListener('click', function (event) {
     //     // if (marker && marker.setPosition) {
@@ -206,7 +225,7 @@ function initMap() {
     //     // anchor.set("position", event.latLng);
     //     // infowindow.open(map, marker);
     // });
-
+    
 }
 JS;
 

@@ -56,12 +56,17 @@ $user = Yii::$app->user;
             [
                 'label' => Yii::t('app', 'Device List'),
                 'url' => '/device',
-                'visible' => !$user->isGuest,
+                'visible' => User::canRoute(['/device/index']),
+            ],
+            [
+                'label' => Yii::t('app', 'Trace'),
+                'url' => '/location-info/trace',
+                'visible' => User::canRoute(['/location-info/trace']),
             ],
             [
                 'label' => Yii::t('app', 'User Device'),
                 'url' => '/user-device',
-                'visible' => $user->isSuperadmin,
+                'visible' => User::canRoute(['/user-device']),
             ],
         ],
     ]);

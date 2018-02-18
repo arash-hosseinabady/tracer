@@ -16,22 +16,30 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'device_id')->textInput() ?>
 
-    <?= $form->field($model, 'latitude')->textInput() ?>
+    <?= $form->field($model, 'latitude')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'longitude')->textInput() ?>
+    <?= $form->field($model, 'longitude')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'speed')->textInput() ?>
+    <?= $form->field($model, 'speed')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'course')->textInput() ?>
+    <?= $form->field($model, 'course')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'command1')->textInput() ?>
+    <?= $form->field($model, 'battery_voltage')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'command2')->textInput() ?>
+    <?= $form->field($model, 'door')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'shock_sensor')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'motor')->textInput() ?>
+
+    <?= $form->field($model, 'command1')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'command2')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'created_at')->textInput() ?>
 
     <div class="form-group">
-        <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
