@@ -160,6 +160,13 @@ function initMap() {
     //       fillOpacity: 0.35
     //     });
     //     bermudaTriangle.setMap(map);
+    
+    var polyline = new google.maps.Polyline({
+          strokeColor: '#FF0000',
+          strokeOpacity: 1,
+          strokeWeight: 2
+        });
+        polyline.setMap(map);
 
     // Place each marker on the map
     for( i = 0; i < markers.length; i++ ) {
@@ -181,6 +188,7 @@ function initMap() {
             title: markers[i][0],
             icon: icons[i]
         });
+        polyline.getPath().push(position);
 
         // Add info window to marker
         google.maps.event.addListener(marker, 'click', (function(marker, i) {
@@ -189,14 +197,12 @@ function initMap() {
                 infoWindow.open(map, marker);
             }
         })(marker, i));
-        
-        // Center the map to fit all markers on the screen
     }
     map.fitBounds(bounds);
 
     // Set zoom level
     var boundsListener = google.maps.event.addListener(map, 'idle', function(event) {
-        map.setZoom(10);
+        map.setZoom(12);
         google.maps.event.removeListener(boundsListener);
     });
 
