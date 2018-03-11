@@ -2,12 +2,10 @@
 
 namespace app\controllers;
 
-use Yii;
-use yii\web\Controller;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 
-class SiteController extends Controller
+class SiteController extends BaseController
 {
     public function behaviors()
     {
@@ -47,9 +45,6 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
-        if (Yii::$app->user->isGuest) {
-            return $this->redirect('/user-management/auth/login');
-        }
         return $this->render('index');
     }
 

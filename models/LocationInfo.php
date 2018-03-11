@@ -94,6 +94,9 @@ class LocationInfo extends \yii\db\ActiveRecord
 
     public function getTimeFormatted()
     {
-        return Yii::$app->jdate->date('Y-m-d H:i:s', $this->time);
+        if (strlen($this->time) == 5) {
+            return substr($this->time, 0, 1) . ':' . substr($this->time, 1, 2) . ':' . substr($this->time, 3, 2);
+        }
+        return substr($this->time, 0, 2) . ':' . substr($this->time, 2, 2) . ':' . substr($this->time, 4, 2);
     }
 }

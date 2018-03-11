@@ -6,14 +6,13 @@ use Yii;
 use app\models\LocationInfo;
 use app\models\LocationInfoSearch;
 use yii\helpers\Json;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
  * LocationInfoController implements the CRUD actions for LocationInfo model.
  */
-class LocationInfoController extends Controller
+class LocationInfoController extends BaseController
 {
     /**
      * @inheritdoc

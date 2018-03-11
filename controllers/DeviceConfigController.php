@@ -5,14 +5,13 @@ namespace app\controllers;
 use Yii;
 use app\models\DeviceConfig;
 use app\models\DeviceConfigSearch;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
  * DeviceConfigController implements the CRUD actions for DeviceConfig model.
  */
-class DeviceConfigController extends Controller
+class DeviceConfigController extends BaseController
 {
     /**
      * @inheritdoc

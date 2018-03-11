@@ -7,14 +7,13 @@ use app\models\UserDevice;
 use Yii;
 use app\models\Device;
 use app\models\DeviceSearch;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
  * DeviceController implements the CRUD actions for Device model.
  */
-class DeviceController extends Controller
+class DeviceController extends BaseController
 {
     /**
      * @inheritdoc

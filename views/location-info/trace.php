@@ -202,7 +202,7 @@ function initMap() {
 
     // Set zoom level
     var boundsListener = google.maps.event.addListener(map, 'idle', function(event) {
-        map.setZoom(12);
+        map.setZoom(16);
         google.maps.event.removeListener(boundsListener);
     });
 

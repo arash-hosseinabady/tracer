@@ -5,14 +5,13 @@ namespace app\controllers;
 use Yii;
 use app\models\UserDevice;
 use app\models\UserDeviceSearch;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
  * UserDeviceController implements the CRUD actions for UserDevice model.
  */
-class UserDeviceController extends Controller
+class UserDeviceController extends BaseController
 {
     /**
      * @inheritdoc

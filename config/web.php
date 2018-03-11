@@ -6,7 +6,12 @@ $config = [
     'id' => 'basic',
     'language' => 'fa-IR',
     'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log'],
+    'bootstrap' => [
+        'log',
+        [
+            'class' => 'app\components\ModuleBootstrap',
+        ],
+    ],
     'homeUrl' => array('/site'),
     'defaultRoute' => '/site',
     //'catchAll' => ['site/offline'],
