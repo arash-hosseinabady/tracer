@@ -3,13 +3,14 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use kartik\widgets\Select2;
+use app\components\pdp\PersianDatePicker;
+use app\models\Helper;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\LocationInfo */
-
 ?>
 
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB-q2u3nMb2RbCDvn3jni7uYHm79u9banY&libraries=geometry"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB-q2u3nMb2RbCDvn3jni7uYHm79u9banY&libraries=geometry&libraries=places"></script>
 
     <div class="location-info-view">
 
@@ -22,7 +23,28 @@ use kartik\widgets\Select2;
                 'data' => \app\models\Device::getUserDevice(),
                 'options' => [
                     'placeholder' => Yii::t('app', 'Select Device'),
+                    'value' => $firstDevice
                 ]
+            ])->label(false) ?>
+
+            <?= $form->field($model, 'from_date', ['options' => ['class' => 'col-lg-2']])->widget(
+                PersianDatePicker::className(), [
+                'options' => [
+                    'placeholder' => Yii::t('app', 'From Date'),
+                ]
+            ])->label(false) ?>
+
+            <?= $form->field($model, 'to_date', ['options' => ['class' => 'col-lg-2']])->widget(
+                PersianDatePicker::className(), [
+                'options' => [
+                    'placeholder' => Yii::t('app', 'To Date'),
+                ]
+            ])->label(false) ?>
+
+            <?= $form->field($model, 'speed', ['options' => ['class' => 'col-lg-2']])->textInput([
+                'type' => 'number',
+                'min' => '0',
+                'placeholder' => Yii::t('app', 'Speed'),
             ])->label(false) ?>
 
             <div class="form-group">
@@ -38,14 +60,23 @@ use kartik\widgets\Select2;
 
         <?php ActiveForm::end(); ?>
 
-        <div id="map_wrapper">
-            <div id="mapCanvas" class="mapping"></div>
+        <div class="row">
+            <div class="col-lg-3">
+            </div>
+            <div class="col-lg-9">
+                <div id="map_wrapper">
+                    <div id="mapCanvas" class="mapping"></div>
+                </div>
+            </div>
         </div>
 
     </div>
 
 <?php
 $deviceId = Html::getInputId($model, 'device_id');
+$speed = Html::getInputId($model, 'speed');
+$fromDate = Html::getInputId($model, 'from_date');
+$toDate = Html::getInputId($model, 'to_date');
 $css = <<< CSS
 #map_wrapper {
     height: 600px;
@@ -59,10 +90,35 @@ CSS;
 $this->registerCss($css);
 
 $js = <<< JS
+var firstDevice;
 var markers = [];
 var infoWindowContent = [];
 var icons = [];
 var device;
+var speed;
+var fromDate;
+var toDate;
+
+firstDevice = $.parseJSON('$output');
+if (firstDevice.length) {
+    $.each(firstDevice, function(index, value) {
+        markers[index] = [
+            '"' + index + '"',
+            value['latitude'],
+            value['longitude']
+        ];
+        icons[index] = value['icon'];
+        infoWindowContent[index] = [
+            '<div class="info_content">' +
+            '<br>' +
+            '<p>speed: ' + value['speed'] + '</p>' +
+            '<p>course: ' + value['course'] + '</p>' +
+            '<p>time: ' + value['time'] + '</p>' +
+            '</div>'
+            ];
+    });
+    initMap();
+}
 
 // Load initialize function
 // google.maps.event.addDomListener(window, 'load', initMap);
@@ -86,11 +142,14 @@ $('#search').on('click', function(e) {
 function ajaxTrace()
 {
     device = $('#$deviceId').val();
+    fromDate = $('#$fromDate').val();
+    toDate = $('#$toDate').val();
+    speed = $('#$speed').val();
     $('#alert-nodata').hide();
     if (device) {
         $.ajax({
             type: 'post',
-            data: {device: device},
+            data: {device: device, fromDate: fromDate, toDate: toDate, speed: speed},
             url: "/location-info/trace",
             success: function(data) {
                 var res = $.parseJSON(data);
@@ -107,6 +166,7 @@ function ajaxTrace()
                         icons[index] = value['icon'];
                         infoWindowContent[index] = [
                             '<div class="info_content">' +
+                            '<br>' +
                             '<p>speed: ' + value['speed'] + '</p>' +
                             '<p>course: ' + value['course'] + '</p>' +
                             '<p>time: ' + value['time'] + '</p>' +
@@ -132,10 +192,10 @@ function initMap() {
     //       {lat: 1.01, lng: 1.2}
     //     ];
     var bounds = new google.maps.LatLngBounds();
-
+    
     var mapOptions = {
         // mapTypeId: 'roadmap',
-        mapTypeControl: false,
+        mapTypeControl: true,
         streetViewControl: false,
         // center: {lat: 40, lng: 41},
         // zoom: 15,
@@ -167,6 +227,9 @@ function initMap() {
           strokeWeight: 2
         });
         polyline.setMap(map);
+        
+    var geocoder = new google.maps.Geocoder;
+    var place_id;
 
     // Place each marker on the map
     for( i = 0; i < markers.length; i++ ) {
@@ -189,11 +252,25 @@ function initMap() {
             icon: icons[i]
         });
         polyline.getPath().push(position);
+        
+        geocoder.geocode({'location': position}, function(results, status) {
+                    if (status === google.maps.GeocoderStatus.OK) {
+                      if (results[1]) {
+                          var placesService = new google.maps.places.PlacesService(map);
+
+                           placesService.getDetails({placeId: results[1].place_id},
+                            function(results) {
+                                place_id = results.formatted_address;
+                            }
+                           );
+                      }
+                    }
+                  });
 
         // Add info window to marker
         google.maps.event.addListener(marker, 'click', (function(marker, i) {
             return function() {
-                infoWindow.setContent(infoWindowContent[i][0]);
+                infoWindow.setContent(infoWindowContent[i][0] + '<br>' + place_id);
                 infoWindow.open(map, marker);
             }
         })(marker, i));

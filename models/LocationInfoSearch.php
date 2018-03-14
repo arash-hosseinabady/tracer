@@ -19,7 +19,7 @@ class LocationInfoSearch extends LocationInfo
     {
         return [
             [['id', 'time', 'device_id', 'motor', 'created_at'], 'integer'],
-            [['latitude', 'longitude', 'speed', 'course', 'battery_voltage', 'door', 'shock_sensor', 'command1', 'command2'], 'safe'],
+            [['latitude', 'longitude', 'speed', 'course', 'battery_voltage', 'door', 'shock_sensor', 'command1', 'command2', 'from_date', 'to_date'], 'safe'],
         ];
     }
 
@@ -63,7 +63,6 @@ class LocationInfoSearch extends LocationInfo
             'time' => $this->time,
             'device_id' => $this->device_id,
             'motor' => $this->motor,
-            'created_at' => $this->created_at,
         ]);
 
         $query->andFilterWhere(['like', 'latitude', $this->latitude])
@@ -75,6 +74,14 @@ class LocationInfoSearch extends LocationInfo
             ->andFilterWhere(['like', 'shock_sensor', $this->shock_sensor])
             ->andFilterWhere(['like', 'command1', $this->command1])
             ->andFilterWhere(['like', 'command2', $this->command2]);
+
+        if ($this->from_date) {
+            $query->andFilterWhere(['>=', 'created_at', Helper::getUnixTimeFromShamsiDate($this->from_date)]);
+        }
+
+        if ($this->to_date) {
+            $query->andFilterWhere(['<=', 'created_at', Helper::getUnixTimeFromShamsiDate($this->to_date)]);
+        }
 
         return $dataProvider;
     }

@@ -26,9 +26,14 @@ use yii\behaviors\TimestampBehavior;
  * @property Device $device
  * @property $createdAt
  * @property $timeFormatted
+ * @property $from_date
+ * @property $to_date
  */
 class LocationInfo extends \yii\db\ActiveRecord
 {
+    public $from_date;
+    public $to_date;
+
     /**
      * @inheritdoc
      */

@@ -55,17 +55,19 @@ class LocationInfoController  extends ActiveController
         if (Yii::$app->request->post('data')) {
             $postData = explode(',', Yii::$app->request->post('data'));
 
-            $model = new LocationInfo();
-            $model->device_id = Device::findOne(['serial' => $postData[0]])->id;
-            $model->time = intval($postData[2]);
-            $model->latitude = (string)(substr($postData[4], 0, 2) + (substr($postData[4], 2) / 60));
-            $model->longitude = (string)(substr($postData[6], 0, 3) + (substr($postData[6], 3) / 60));
-            $model->speed = (string)($postData[8] * 1.85);
-            $model->course = $postData[9];
-            if ($model->save()) {
-                return $model;
+            if ($postData[3] == 'A') {
+                $model = new LocationInfo();
+                $model->device_id = Device::findOne(['serial' => $postData[0]])->id;
+                $model->time = intval($postData[2]);
+                $model->latitude = (string)(substr($postData[4], 0, 2) + (substr($postData[4], 2) / 60));
+                $model->longitude = (string)(substr($postData[6], 0, 3) + (substr($postData[6], 3) / 60));
+                $model->speed = (string)($postData[8] * 1.85);
+                $model->course = $postData[9];
+                if ($model->save()) {
+                    return $model;
+                }
+                return $model->errors;
             }
-            return $model->errors;
         }
 
         return 'request invalid!';

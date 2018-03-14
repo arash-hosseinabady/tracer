@@ -43,7 +43,14 @@ class PersianDatePicker extends InputWidget
         if (empty($this->name)) {
             $this->name = Html::getInputName($this->model, $this->attribute);
         }
-        echo Html::tag('input', '', ['id' => $this->id, 'name' => $this->name, 'class' => 'form-control', 'type' => 'text', 'value' => $this->value,]);
+        echo Html::tag('input', '', [
+            'id' => $this->id,
+            'name' => $this->name,
+            'class' => 'form-control',
+            'type' => 'text',
+            'value' => $this->value,
+            'placeholder' => isset($this->options['placeholder']) ? $this->options['placeholder'] : '',
+        ]);
     }
 
     public function registerJs()

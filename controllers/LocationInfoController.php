@@ -2,6 +2,9 @@
 
 namespace app\controllers;
 
+use app\models\Device;
+use app\models\Helper;
+use app\models\UserDevice;
 use Yii;
 use app\models\LocationInfo;
 use app\models\LocationInfoSearch;
@@ -59,11 +62,17 @@ class LocationInfoController extends BaseController
     public function actionTrace()
     {
         $model = new LocationInfo();
+        $output = [];
 
         if (Yii::$app->request->isAjax) {
             $postData = Yii::$app->request->post();
-            $output = [];
-            $locationInfo = $model::findAll(['device_id' => $postData['device']]);
+            $locationInfo = $model::find()
+                ->andFilterWhere(['device_id' => $postData['device']])
+                ->andFilterWhere(['>=', 'speed', $postData['speed']])
+                ->andFilterWhere(['>=', 'created_at', Helper::getUnixTimeFromShamsiDate($postData['fromDate'])])
+                ->andFilterWhere(['<=', 'created_at', Helper::getUnixTimeFromShamsiDate($postData['toDate'])])
+                ->all();
+
             if ($locationInfo) {
                 foreach ($locationInfo as $value) {
                     $output[] = [
@@ -78,10 +87,29 @@ class LocationInfoController extends BaseController
                 }
             }
             return Json::encode($output);
+        } else {
+            $firstDevice = UserDevice::getUserFirstDevice();
+            $locationInfo = $model::findAll(['device_id' => $firstDevice]);
+
+            if ($locationInfo) {
+                foreach ($locationInfo as $value) {
+                    $output[] = [
+                        'device_id' => $value->device_id,
+                        'latitude' => $value->latitude,
+                        'longitude' => $value->longitude,
+                        'time' => $value->timeFormatted,
+                        'speed' => $value->speed,
+                        'icon' => ($value->speed > $value->device->config['speed']) ? '/img/markers/red_MarkerA.png' : '/img/markers/green_MarkerA.png',
+                        'course' => $value->course,
+                    ];
+                }
+            }
         }
 
         return $this->render('trace', [
             'model' => $model,
+            'firstDevice' => $firstDevice,
+            'output' => Json::encode($output),
         ]);
     }
 

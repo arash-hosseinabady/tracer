@@ -72,4 +72,16 @@ class UserDevice extends \yii\db\ActiveRecord
     {
         return Yii::$app->jdate->date('H:i Y-m-d', $this->created_at);
     }
+
+    static function getUserFirstDevice()
+    {
+        $firstUserDevice = self::find()
+            ->where(['user_id' => Yii::$app->user->id])
+            ->orderBy(['id' => SORT_ASC])
+            ->limit(1)
+            ->one();
+
+
+        return $firstUserDevice['device_id'];
+    }
 }
