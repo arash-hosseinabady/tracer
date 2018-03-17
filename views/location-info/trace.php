@@ -120,9 +120,6 @@ if (firstDevice.length) {
     initMap();
 }
 
-// Load initialize function
-// google.maps.event.addDomListener(window, 'load', initMap);
-
 $('#search').on('click', function(e) {
     e.preventDefault();
     $('#device-selection').hide();
@@ -132,12 +129,6 @@ $('#search').on('click', function(e) {
         $('#device-selection').show();
     }
 });
-
-// var refreshTimeout = setInterval(function(){
-//     if (device) {
-//         ajaxTrace(); 
-//     }
-// }, 30000);
 
 function ajaxTrace()
 {
@@ -185,18 +176,15 @@ function ajaxTrace()
 
 function initMap() {
     var map;
-    // var triangleCoords = [
-    //       {lat: 1.01, lng: 1.18},
-    //       {lat: 1.003, lng: 1.18},
-    //       {lat: 1, lng: 1.2},
-    //       {lat: 1.01, lng: 1.2}
-    //     ];
     var bounds = new google.maps.LatLngBounds();
     
     var mapOptions = {
         // mapTypeId: 'roadmap',
         mapTypeControl: true,
-        streetViewControl: false,
+        mapTypeControlOptions: {
+            style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
+        },
+        streetViewControl: false
         // center: {lat: 40, lng: 41},
         // zoom: 15,
         // bounds: bounds
@@ -211,66 +199,57 @@ function initMap() {
     var infoWindow = new google.maps.InfoWindow(), marker, i;
     // var icon = '';
 
-    // var bermudaTriangle = new google.maps.Polygon({
-    //       paths: triangleCoords,
-    //       strokeColor: '#FF0000',
-    //       strokeOpacity: 0.8,
-    //       strokeWeight: 2,
-    //       fillColor: '#ff0000',
-    //       fillOpacity: 0.35
-    //     });
-    //     bermudaTriangle.setMap(map);
-    
     var polyline = new google.maps.Polyline({
-          strokeColor: '#FF0000',
-          strokeOpacity: 1,
-          strokeWeight: 2
-        });
-        polyline.setMap(map);
+          // strokeColor: '#FF0000',
+          // strokeOpacity: 1,
+          // strokeWeight: 2,
+          map: map,
+          icons: [{
+              icon: {
+                  path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+                  strokeColor:'#0000ff',
+                  fillColor:'#0000ff',
+                  fillOpacity:1
+              },
+              repeat:'50px',
+              path:[]
+          }]
+    });
         
     var geocoder = new google.maps.Geocoder;
     var place_id;
+    var placesService = new google.maps.places.PlacesService(map);
 
     // Place each marker on the map
     for( i = 0; i < markers.length; i++ ) {
         var position = new google.maps.LatLng(markers[i][1], markers[i][2]);
         bounds.extend(position);
-        // if (google.maps.geometry.poly.containsLocation(position, bermudaTriangle)) {
-        //     icon = '/img/markers/green_MarkerA.png';
-        // } else {
-        //     icon = '/img/markers/red_MarkerA.png';
-        // }
-        // if (map.getBounds().contains(position)) {
-        //     icon = '/img/markers/green_MarkerA.png';
-        // } else {
-        //     icon = '/img/markers/red_MarkerA.png';
-        // }
+        if (i == 0 || (i + 1) == markers.length) {
         marker = new google.maps.Marker({
             position: position,
             map: map,
             title: markers[i][0],
             icon: icons[i]
         });
+        }
         polyline.getPath().push(position);
         
         geocoder.geocode({'location': position}, function(results, status) {
-                    if (status === google.maps.GeocoderStatus.OK) {
-                      if (results[1]) {
-                          var placesService = new google.maps.places.PlacesService(map);
-
-                           placesService.getDetails({placeId: results[1].place_id},
-                            function(results) {
-                                place_id = results.formatted_address;
-                            }
-                           );
-                      }
-                    }
-                  });
-
+            if (status === google.maps.GeocoderStatus.OK) {
+                if (results[1]) {
+                    // var placesService = new google.maps.places.PlacesService(map);
+                    placesService.getDetails({placeId: results[1].place_id},
+                    function(results) {
+                        place_id = results.formatted_address;
+                    });
+                }
+            }
+        });
+        
+        infoWindow.setContent(infoWindowContent[i][0] + '<br>' + place_id);
         // Add info window to marker
         google.maps.event.addListener(marker, 'click', (function(marker, i) {
             return function() {
-                infoWindow.setContent(infoWindowContent[i][0] + '<br>' + place_id);
                 infoWindow.open(map, marker);
             }
         })(marker, i));
@@ -282,33 +261,6 @@ function initMap() {
         map.setZoom(16);
         google.maps.event.removeListener(boundsListener);
     });
-
-    //add marker by click
-    // google.maps.event.addListener(map, 'click', function(event) {
-    //    placeMarker(event.latLng);
-    // });
-
-    // function placeMarker(location) {
-    //     console.log(location.lat());
-    //     console.log(location.lng());
-    //     marker = new google.maps.Marker({
-    //         position: location,
-    //         map: map
-    //     });
-    // }
-
-    // bermudaTriangle.addListener('click', function (event) {
-    //     // if (marker && marker.setPosition) {
-    //     //   marker.setPosition(event.latLng);
-    //     //   } else {
-    //       marker = new google.maps.Marker({position: event.latLng,map:map});
-    //         // }
-    //     // infowindow.setContent("Hello, world.");
-    //     // var anchor = new google.maps.MVCObject();
-    //     // anchor.set("position", event.latLng);
-    //     // infowindow.open(map, marker);
-    // });
-    
 }
 JS;
 

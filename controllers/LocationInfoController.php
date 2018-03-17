@@ -74,14 +74,21 @@ class LocationInfoController extends BaseController
                 ->all();
 
             if ($locationInfo) {
-                foreach ($locationInfo as $value) {
+                foreach ($locationInfo as $key => $value) {
+                    $icon = '';
+                    if ($key == 0) {
+                        $icon = '/img/markers/green_MarkerA.png';
+                    } elseif (($key + 1) == count($locationInfo)) {
+                        $icon = '/img/markers/red_MarkerA.png';
+                    }
                     $output[] = [
                         'device_id' => $value->device_id,
                         'latitude' => $value->latitude,
                         'longitude' => $value->longitude,
                         'time' => $value->timeFormatted,
                         'speed' => $value->speed,
-                        'icon' => ($value->speed > $value->device->config['speed']) ? '/img/markers/red_MarkerA.png' : '/img/markers/green_MarkerA.png',
+//                        'icon' => ($value->speed > $value->device->config['speed']) ? '/img/markers/red_MarkerA.png' : '/img/markers/green_MarkerA.png',
+                        'icon' => $icon,
                         'course' => $value->course,
                     ];
                 }
@@ -92,14 +99,21 @@ class LocationInfoController extends BaseController
             $locationInfo = $model::findAll(['device_id' => $firstDevice]);
 
             if ($locationInfo) {
-                foreach ($locationInfo as $value) {
+                foreach ($locationInfo as $key => $value) {
+                    $icon = '';
+                    if ($key == 0) {
+                        $icon = '/img/markers/green_MarkerA.png';
+                    } elseif (($key + 1) == count($locationInfo)) {
+                        $icon = '/img/markers/red_MarkerA.png';
+                    }
                     $output[] = [
                         'device_id' => $value->device_id,
                         'latitude' => $value->latitude,
                         'longitude' => $value->longitude,
                         'time' => $value->timeFormatted,
                         'speed' => $value->speed,
-                        'icon' => ($value->speed > $value->device->config['speed']) ? '/img/markers/red_MarkerA.png' : '/img/markers/green_MarkerA.png',
+//                        'icon' => ($value->speed > $value->device->config['speed']) ? '/img/markers/red_MarkerA.png' : '/img/markers/green_MarkerA.png',
+                        'icon' => $icon,
                         'course' => $value->course,
                     ];
                 }

@@ -13,7 +13,7 @@ $config = [
             'class' => 'app\components\ModuleBootstrap',
         ],
     ],
-    'homeUrl' => array('/site'),
+    'homeUrl' => array('/location-info/trace'),
     'defaultRoute' => '/site',
     //'catchAll' => ['site/offline'],
     'components' => [
