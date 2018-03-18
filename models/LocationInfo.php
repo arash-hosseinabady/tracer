@@ -97,6 +97,11 @@ class LocationInfo extends \yii\db\ActiveRecord
         return Yii::$app->jdate->date('Y-m-d H:i:s', $this->created_at);
     }
 
+    public function getDateCreatedAt()
+    {
+        return Yii::$app->jdate->date('Y-m-d', $this->created_at);
+    }
+
     public function getTimeFormatted()
     {
         if (strlen($this->time) == 5) {

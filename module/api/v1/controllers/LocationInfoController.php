@@ -64,7 +64,7 @@ class LocationInfoController  extends ActiveController
                 $model->speed = (string)($postData[8] * 1.85);
                 $model->course = $postData[9];
                 if ($model->save()) {
-                    return $model;
+                    return 'valid';
                 }
                 return $model->errors;
             }

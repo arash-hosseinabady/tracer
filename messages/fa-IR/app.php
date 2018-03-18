@@ -17,6 +17,7 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
+    'Address' => 'آدرس',
     'Are you sure you want to delete this item?' => 'آیا از حذف این مورد مطمئن هستید؟',
     'Auth Key' => '',
     'Battery Voltage' => '',
@@ -44,6 +45,7 @@ return [
     'From Date' => 'از تاریخ',
     'Frontend' => '',
     'ID' => '',
+    'Last location info' => 'اطلاعات آخرین موقعیت',
     'Latitude' => '',
     'Location Infos' => 'لیست اطلاعات مکانی',
     'Logout' => 'خروج',

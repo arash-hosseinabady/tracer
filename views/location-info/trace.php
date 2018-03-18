@@ -62,6 +62,15 @@ use app\models\Helper;
 
         <div class="row">
             <div class="col-lg-3">
+                <div class="panel panel-info">
+                    <div class="panel-heading"><?= Yii::t('app', 'Last location info') ?></div>
+                    <div class="panel-body">
+                        <p><?= Yii::t('app', 'Speed') ?> : <span id="last-location-speed"><?= isset($lastLocationInfo['speed']) ? $lastLocationInfo['speed'] : '' ?></span></p>
+                        <p><?= Yii::t('app', 'Course') ?> : <span id="last-location-course"><?= isset($lastLocationInfo['course']) ? $lastLocationInfo['course'] : '' ?></span></p>
+                        <p><?= Yii::t('app', 'Time') ?> : <span id="last-location-time"><?= isset($lastLocationInfo['time']) ? $lastLocationInfo['time'] : '' ?></span></p>
+                        <p><?= Yii::t('app', 'Address') ?> : <span id="last-location-address"><?= isset($lastLocationInfo['address']) ? $lastLocationInfo['address'] : '' ?></span></p>
+                    </div>
+                </div>
             </div>
             <div class="col-lg-9">
                 <div id="map_wrapper">
@@ -99,7 +108,7 @@ var speed;
 var fromDate;
 var toDate;
 
-firstDevice = $.parseJSON('$output');
+firstDevice = $.parseJSON('$firstDeviceInfo');
 if (firstDevice.length) {
     $.each(firstDevice, function(index, value) {
         markers[index] = [
@@ -164,6 +173,10 @@ function ajaxTrace()
                             '</div>'
                             ];
                     });
+                    $('#last-location-speed').html(res[res.length - 1]['speed']);
+                    $('#last-location-course').html(res[res.length - 1]['course']);
+                    $('#last-location-time').html(res[res.length - 1]['time']);
+                    $('#last-location-address').html(res[res.length - 1]['address']);
                     // google.maps.event.addDomListener(window, 'load', initMap);
                     initMap();
                 } else {
@@ -216,49 +229,49 @@ function initMap() {
           }]
     });
         
-    var geocoder = new google.maps.Geocoder;
-    var place_id;
-    var placesService = new google.maps.places.PlacesService(map);
+    // var geocoder = new google.maps.Geocoder;
+    // var place_id;
+    // var placesService = new google.maps.places.PlacesService(map);
 
     // Place each marker on the map
     for( i = 0; i < markers.length; i++ ) {
         var position = new google.maps.LatLng(markers[i][1], markers[i][2]);
         bounds.extend(position);
         if (i == 0 || (i + 1) == markers.length) {
-        marker = new google.maps.Marker({
-            position: position,
-            map: map,
-            title: markers[i][0],
-            icon: icons[i]
-        });
+            marker = new google.maps.Marker({
+                position: position,
+                map: map,
+                title: markers[i][0],
+                icon: icons[i]
+            });
+            
+            // geocoder.geocode({'location': position}, function(results, status) {
+            //     if (status === google.maps.GeocoderStatus.OK) {
+            //         if (results[1]) {
+            //             // var placesService = new google.maps.places.PlacesService(map);
+            //             placesService.getDetails({placeId: results[1].place_id},
+            //             function(results) {
+            //                 place_id = results.formatted_address;
+            //             });
+            //         }
+            //     }
+            // });
+            
+            // Add info window to marker
+            google.maps.event.addListener(marker, 'click', (function(marker, i) {
+                return function() {
+                    infoWindow.setContent(infoWindowContent[i][0]);
+                    infoWindow.open(map, marker);
+                }
+            })(marker, i));
         }
         polyline.getPath().push(position);
-        
-        geocoder.geocode({'location': position}, function(results, status) {
-            if (status === google.maps.GeocoderStatus.OK) {
-                if (results[1]) {
-                    // var placesService = new google.maps.places.PlacesService(map);
-                    placesService.getDetails({placeId: results[1].place_id},
-                    function(results) {
-                        place_id = results.formatted_address;
-                    });
-                }
-            }
-        });
-        
-        infoWindow.setContent(infoWindowContent[i][0] + '<br>' + place_id);
-        // Add info window to marker
-        google.maps.event.addListener(marker, 'click', (function(marker, i) {
-            return function() {
-                infoWindow.open(map, marker);
-            }
-        })(marker, i));
     }
     map.fitBounds(bounds);
 
     // Set zoom level
     var boundsListener = google.maps.event.addListener(map, 'idle', function(event) {
-        map.setZoom(16);
+        // map.setZoom(16);
         google.maps.event.removeListener(boundsListener);
     });
 }
