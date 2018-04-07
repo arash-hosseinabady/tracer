@@ -5,6 +5,7 @@ namespace app\models;
 use webvimark\modules\UserManagement\models\User;
 use Yii;
 use yii\behaviors\TimestampBehavior;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "user_device".
@@ -75,8 +76,11 @@ class UserDevice extends \yii\db\ActiveRecord
 
     static function getUserFirstDevice()
     {
+        $devices = Device::getList();
+
         $firstUserDevice = self::find()
             ->where(['user_id' => Yii::$app->user->id])
+            ->andWhere(['IN', 'device_id',  array_keys($devices)])
             ->orderBy(['id' => SORT_ASC])
             ->limit(1)
             ->one();

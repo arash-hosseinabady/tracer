@@ -62,7 +62,7 @@ use app\models\Helper;
 
         <div class="row">
             <div class="col-lg-3">
-                <div class="panel panel-info">
+                <div class="panel panel-info panel-last-location" style="display: <?= isset($lastLocationInfo['speed']) ? 'block' : 'none' ?>">
                     <div class="panel-heading"><?= Yii::t('app', 'Last location info') ?></div>
                     <div class="panel-body">
                         <p><?= Yii::t('app', 'Speed') ?> : <span id="last-location-speed"><?= isset($lastLocationInfo['speed']) ? $lastLocationInfo['speed'] : '' ?></span></p>
@@ -173,6 +173,9 @@ function ajaxTrace()
                             '</div>'
                             ];
                     });
+                    if (res[res.length - 1]['speed']) {
+                        $('.panel-last-location').show();
+                    }
                     $('#last-location-speed').html(res[res.length - 1]['speed']);
                     $('#last-location-course').html(res[res.length - 1]['course']);
                     $('#last-location-time').html(res[res.length - 1]['time']);

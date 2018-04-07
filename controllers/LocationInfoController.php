@@ -8,6 +8,7 @@ use app\models\UserDevice;
 use Yii;
 use app\models\LocationInfo;
 use app\models\LocationInfoSearch;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -71,16 +72,16 @@ class LocationInfoController extends BaseController
                 ->andFilterWhere(['>=', 'speed', $postData['speed']])
                 ->andFilterWhere(['>=', 'created_at', Helper::getUnixTimeFromShamsiDate($postData['fromDate'])])
                 ->andFilterWhere(['<=', 'created_at', Helper::getUnixTimeFromShamsiDate($postData['toDate'])])
-                ->limit(20)
+                ->orderBy(['id' => SORT_DESC])
                 ->all();
 
             if ($locationInfo) {
                 foreach ($locationInfo as $key => $value) {
                     $icon = '';
                     if ($key == 0) {
-                        $icon = '/img/markers/green_MarkerA.png';
-                    } elseif (($key + 1) == count($locationInfo)) {
                         $icon = '/img/markers/red_MarkerA.png';
+                    } elseif (($key + 1) == count($locationInfo)) {
+                        $icon = '/img/markers/green_MarkerA.png';
                     }
                     $output[] = [
                         'device_id' => $value->device_id,
@@ -93,6 +94,8 @@ class LocationInfoController extends BaseController
                         'course' => $value->course,
                     ];
                 }
+
+                $output = array_reverse($output);
                 $output[count($output) - 1]['address'] = '-';
                 if ($address = $this->getAddressLocation($output[count($output) - 1]['latitude'], $output[count($output) - 1]['longitude'])) {
                     $output[count($output) - 1]['address'] = $address;
@@ -100,7 +103,7 @@ class LocationInfoController extends BaseController
             }
             return Json::encode($output);
         } else {
-            $firstDeviceInfo = '';
+            $firstDeviceInfo = [];
             $firstDevice = UserDevice::getUserFirstDevice();
             $locationInfo = $model::find()
                 ->where(['device_id' => $firstDevice])
@@ -112,9 +115,9 @@ class LocationInfoController extends BaseController
                 foreach ($locationInfo as $key => $value) {
                     $icon = '';
                     if ($key == 0) {
-                        $icon = '/img/markers/green_MarkerA.png';
-                    } elseif (($key + 1) == count($locationInfo)) {
                         $icon = '/img/markers/red_MarkerA.png';
+                    } elseif (($key + 1) == count($locationInfo)) {
+                        $icon = '/img/markers/green_MarkerA.png';
                     }
                     $firstDeviceInfo[] = [
                         'device_id' => $value->device_id,
@@ -128,6 +131,7 @@ class LocationInfoController extends BaseController
                     ];
                 }
 
+                $firstDeviceInfo = array_reverse($firstDeviceInfo);
                 $firstDeviceInfo[count($firstDeviceInfo) - 1]['address'] = '-';
                 if ($address = $this->getAddressLocation($firstDeviceInfo[count($firstDeviceInfo) - 1]['latitude'], $firstDeviceInfo[count($firstDeviceInfo) - 1]['longitude'])) {
                     $firstDeviceInfo[count($firstDeviceInfo) - 1]['address'] = $address;
