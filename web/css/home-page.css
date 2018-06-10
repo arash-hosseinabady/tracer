@@ -1,0 +1,78 @@
+.banner {
+    height: 420px;
+    padding-bottom: 20px;
+}
+
+#feature .list {
+    /*background-color: #fcfcfc;*/
+    border-radius: 5px;
+    padding: 15px;
+}
+
+#feature, #how-to-use, #about-us, .contact {
+    padding-top: 50px;
+}
+
+/*#how-to-use {*/
+    /*height: 250px;*/
+/*}*/
+
+#feature .title,
+#feature .details .details-title,
+#about-us .title,
+#how-to-use .title,
+#how-to-use .steps {
+    text-align: center;
+}
+
+#feature .details .details-title,
+#feature .details .feature-details-body {
+    padding-top: 15px;
+}
+
+#feature .details {
+    /*background-color: #ffffff;*/
+    margin: 10px;
+    border-radius: 5px;
+    height: auto;
+}
+
+#feature .feature-details-body img {
+    width: 100%;
+}
+
+#how-to-use .steps {
+    padding: 0;
+}
+
+#how-to-use .step {
+    border: 1px dashed rgba(134, 147, 158, 0.21);
+    margin: 30px 0;
+    position: relative;
+}
+
+#how-to-use .step:after {
+    content: " ";
+    display: block;
+    background: #fff;
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    border-radius: 50%;
+    border: 3px solid #86939e;
+    left: 50%;
+    margin-left: -10px;
+    margin-top: -10px;
+}
+
+.contact {
+    height: 400px;
+}
+
+#about-us .content {
+    height: 300px;
+}
+
+#about-us .content p{
+    font-size: 14px;
+}

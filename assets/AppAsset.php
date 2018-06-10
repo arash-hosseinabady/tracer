@@ -7,6 +7,7 @@
 
 namespace app\assets;
 
+use Yii;
 use yii\web\AssetBundle;
 
 /**
@@ -26,6 +27,14 @@ class AppAsset extends AssetBundle
     public $depends = [
         'yii\web\YiiAsset',
         'yii\bootstrap\BootstrapAsset',
-        'airani\bootstrap\BootstrapRtlAsset',
     ];
+
+    public function init()
+    {
+        if (Yii::$app->language == 'fa-IR') {
+            $this->depends[] = 'airani\bootstrap\BootstrapRtlAsset';
+        }
+
+        parent::init();
+    }
 }

@@ -5,6 +5,7 @@ namespace app\controllers;
 use Yii;
 use app\models\DeviceConfig;
 use app\models\DeviceConfigSearch;
+use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
@@ -18,14 +19,14 @@ class DeviceConfigController extends BaseController
      */
     public function behaviors()
     {
-        return [
+        return ArrayHelper::merge(parent::behaviors(), [
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
                 ],
             ],
-        ];
+        ]);
     }
 
     /**

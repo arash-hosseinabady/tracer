@@ -9,7 +9,7 @@
  * Each array element represents the translation (value) of a message (key).
  * If the value is empty, the message is considered as not translated.
  * Messages that no longer need translation will have their translations
- * enclosed between a pair of '' marks.
+ * enclosed between a pair of '@@' marks.
  *
  * Message string can be used with plural forms format. Check i18n section
  * of the guide for details.
@@ -17,6 +17,7 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
+    'About Us' => 'درباره ما',
     'Address' => 'آدرس',
     'Are you sure you want to delete this item?' => 'آیا از حذف این مورد مطمئن هستید؟',
     'Auth Key' => '',
@@ -26,8 +27,10 @@ return [
     'Command1' => '',
     'Command2' => '',
     'Confirmation Token' => '',
+    'Contact With Us' => 'تماس با ما',
     'Course' => '',
     'Create' => 'ایجاد',
+    'Create Account' => 'ایجاد اکانت',
     'Create Device' => 'ایجاد دستگاه',
     'Create Device Config' => '',
     'Create Location Info' => 'ایجاد اطلاعات مکانی',
@@ -42,12 +45,18 @@ return [
     'Door' => '',
     'Email' => 'ایمیل',
     'Email Confirmed' => '',
+    'Feature' => 'ویژگی',
+    'Feature List' => 'ویژگی ها',
+    'Feature Tracer System' => 'ویژگی سیستم ردیابی',
     'From Date' => 'از تاریخ',
-    'Frontend' => '',
+    'Frontend' => '@@@@',
+    'Get Started' => 'شروع',
+    'How It Work' => 'چطور کار می کند',
     'ID' => '',
     'Last location info' => 'اطلاعات آخرین موقعیت',
     'Latitude' => '',
     'Location Infos' => 'لیست اطلاعات مکانی',
+    'Login' => 'ورود',
     'Logout' => 'خروج',
     'Longitude' => '',
     'Motor' => '',
@@ -57,6 +66,7 @@ return [
     'Password Hash' => '',
     'Please select a device!' => 'لطفا یک دستگاه را انتخاب نمایید!',
     'Province ID' => '',
+    'Register Device' => 'ثبت دستگاه',
     'Registration Ip' => '',
     'Request' => '',
     'Reset' => '',
@@ -73,10 +83,11 @@ return [
     'Time' => 'زمان',
     'To Date' => 'تا تاریخ',
     'Trace' => '',
-    'Trace System' => '',
+    'Trace System' => 'سیستم ردیابی',
     'Tracer System' => 'سیستم ردیابی',
+    'Tracking' => 'ردیابی',
     'Update' => 'ویرایش',
-    'Update Location Info: {nameAttribute}' => '',
+    'Update Location Info: {nameAttribute}' => '@@@@',
     'Update User Device: {nameAttribute}' => '',
     'Update {modelClass}: ' => '',
     'Updated At' => '',

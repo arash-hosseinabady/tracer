@@ -30,20 +30,25 @@ $user = Yii::$app->user;
 <div class="wrap">
     <?php
     NavBar::begin([
-        'brandLabel' => '',
-        'brandUrl' => Yii::$app->homeUrl,
+        'brandLabel' => Yii::t('app', 'Trace System'),
+        'brandUrl' => '/',
         'options' => [
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
     ]);
     echo Nav::widget([
-        'options' => ['class' => 'navbar-nav navbar-right'],
+        'options' => ['class' => 'navbar-nav'],
         'encodeLabels' => false,
         'items' => [
             [
+                'label' => Yii::t('app', 'Login'),
+                'url' => ['/user-management/auth/login'],
+                'visible' => $user->isGuest,
+            ],
+            [
                 'label' => !$user->isGuest ? $user->username : Yii::t('app', 'User'),
                 'items' => [
-                    ['label' => Yii::t('app', 'Logout'), 'url' => ['/user-management/auth/logout']],
+                    ['label' => Yii::t('app', 'Logout'), 'url' => ['/site/logout']],
                     ['label' => Yii::t('app', 'Change own password'), 'url' => ['/user-management/auth/change-own-password']],
                 ],
                 'visible' => !$user->isGuest,
@@ -68,16 +73,15 @@ $user = Yii::$app->user;
                 'url' => '/user-device',
                 'visible' => User::canRoute(['/user-device']),
             ],
+            [
+                'label' => Yii::t('app', 'Contact With Us'),
+                'url' => '#',
+            ],
         ],
     ]);
     ?>
-    <span class="navbar-text navbar-left" id='clock' data-clock='<?= date('U') ?>'>
-                <?= Yii::$app->jdate->date('Y-m-d H:i'); ?>
-            </span>
-    <?php NavBar::end();
-    ?>
+    <?php NavBar::end(); ?>
     <div class="container-fluid">
-        </br></br></br></br>
         <?=
         Breadcrumbs::widget([
             'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],

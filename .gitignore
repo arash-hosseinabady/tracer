@@ -16,10 +16,21 @@ Thumbs.db
 /config/db.php
 
 # composer vendor dir
-/vendor/
+/vendor/*
+!/vendor/webvimark
+/vendor/webvimark/*
+!/vendor/webvimark/module-user-management
+/vendor/webvimark/module-user-management/*
+!/vendor/webvimark/module-user-management/views
+/vendor/webvimark/module-user-management/views/*
+!/vendor/webvimark/module-user-management/views/auth
+/vendor/webvimark/module-user-management/views/auth/*
+!/vendor/webvimark/module-user-management/views/auth/registration.php
 
 /web/assets/*
 !/web/assets
+
+/web/img/*
 
 # composer itself is not needed
 composer.phar
