@@ -5,14 +5,12 @@ use yii\widgets\ActiveForm;
 use kartik\widgets\Select2;
 use app\components\pdp\PersianDatePicker;
 use app\models\Helper;
-use yii\web\View;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\LocationInfo */
-
-$this->registerCssFile('/css/mapbox-gl.css');
-$this->registerJsFile('/js/mapbox-gl.js', ['position' => View::POS_HEAD]);
 ?>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB-q2u3nMb2RbCDvn3jni7uYHm79u9banY&libraries=geometry&libraries=places"></script>
 
     <div class="location-info-view">
 
@@ -76,7 +74,7 @@ $this->registerJsFile('/js/mapbox-gl.js', ['position' => View::POS_HEAD]);
             </div>
             <div class="col-lg-9">
                 <div id="map_wrapper">
-                    <div id="map_canvas" class="mapping"></div>
+                    <div id="mapCanvas" class="mapping"></div>
                 </div>
             </div>
         </div>
@@ -93,7 +91,7 @@ $css = <<< CSS
     height: 600px;
 }
 
-#map_canvas {
+#mapCanvas {
     width: 100%;
     height: 100%;
 }
@@ -109,46 +107,25 @@ var device;
 var speed;
 var fromDate;
 var toDate;
-var pointOnMap = [];
-var map;
 
 firstDevice = $.parseJSON('$firstDeviceInfo');
-
-function loadMap() {
-    mapboxgl.accessToken = 'pk.eyJ1IjoiYS1ob3NzZWluYWJhZGkiLCJhIjoiY2ppYmU4aHdwMDFjMDNxdXB1dmptbndkMSJ9.plf7LGhARLDHQWd7JC7rng';
-    map = new mapboxgl.Map({
-        container: 'map_canvas',
-        style: 'mapbox://styles/mapbox/streets-v10'
-    });
-}
 if (firstDevice.length) {
-    loadMap();
-    
-    var coordinates = [];
     $.each(firstDevice, function(index, value) {
-        if (index == 0 || (index + 1) == firstDevice.length) {
-            pointOnMap[index] = {
-                "type": "Feature",
-                "geometry": {
-                    "type": "Point",
-                    "coordinates": [value['longitude'], value['latitude']]
-                },
-                "properties": {
-                    "description": '<div class="info_content">' +
-                    '<br>' +
-                    '<p>address: ' + value['address'] + '</p>' +
-                    '<p>time: ' + value['created_at'] + '</p>' +
-                    '</div>',
-                    "icon": "car",
-                    "device_id": value['id'],
-                    "iconImg": value['icon']
-                }
-            };
-        }
-
-        coordinates[index] = [value['longitude'], value['latitude']];
+        markers[index] = [
+            '"' + index + '"',
+            value['latitude'],
+            value['longitude']
+        ];
+        icons[index] = value['icon'];
+        infoWindowContent[index] = [
+            '<div class="info_content">' +
+            '<br>' +
+            '<p>speed: ' + value['speed'] + '</p>' +
+            '<p>course: ' + value['course'] + '</p>' +
+            '<p>time: ' + value['time'] + '</p>' +
+            '</div>'
+            ];
     });
-    
     initMap();
 }
 
@@ -181,27 +158,20 @@ function ajaxTrace()
                 infoWindowContent = [];
                 if (res.length) {
                     $.each(res, function(index, value) {
-                        if (index == 0 || (index + 1) == firstDevice.length) {
-                            pointOnMap[index] = {
-                                "type": "Feature",
-                                "geometry": {
-                                    "type": "Point",
-                                    "coordinates": [value['longitude'], value['latitude']]
-                                },
-                                "properties": {
-                                    "description": '<div class="info_content">' +
-                                    '<br>' +
-                                    '<p>address: ' + value['address'] + '</p>' +
-                                    '<p>time: ' + value['created_at'] + '</p>' +
-                                    '</div>',
-                                    "icon": "car",
-                                    "device_id": value['id'],
-                                    "iconImg": value['icon']
-                                }
-                            };
-                        }
-                
-                        coordinates[index] = [value['longitude'], value['latitude']];
+                        markers[index] = [
+                            '"' + index + '"',
+                            value['latitude'],
+                            value['longitude']
+                        ];
+                        icons[index] = value['icon'];
+                        infoWindowContent[index] = [
+                            '<div class="info_content">' +
+                            '<br>' +
+                            '<p>speed: ' + value['speed'] + '</p>' +
+                            '<p>course: ' + value['course'] + '</p>' +
+                            '<p>time: ' + value['time'] + '</p>' +
+                            '</div>'
+                            ];
                     });
                     if (res[res.length - 1]['speed']) {
                         $('.panel-last-location').show();
@@ -211,7 +181,6 @@ function ajaxTrace()
                     $('#last-location-time').html(res[res.length - 1]['time']);
                     $('#last-location-address').html(res[res.length - 1]['address']);
                     // google.maps.event.addDomListener(window, 'load', initMap);
-                    loadMap();
                     initMap();
                 } else {
                     $('#alert-nodata').show();
@@ -222,73 +191,91 @@ function ajaxTrace()
 }
 
 function initMap() {
-    var geoJson = {
-        "type": "FeatureCollection",
-        "features": pointOnMap
+    var map;
+    var bounds = new google.maps.LatLngBounds();
+    
+    var mapOptions = {
+        // mapTypeId: 'roadmap',
+        mapTypeControl: true,
+        mapTypeControlOptions: {
+            style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
+        },
+        streetViewControl: false
+        // center: {lat: 40, lng: 41},
+        // zoom: 15,
+        // bounds: bounds
     };
-    
-    geoJson.features.forEach(function (marker) {
-        // create a DOM element for the marker
-        var el = document.createElement('div');
-        el.className = 'marker';
-        el.style.backgroundImage = 'url(' + marker.properties.iconImg + ')';
-        el.style.width = '20px';
-        el.style.height = '34px';
 
-        el.addEventListener('mouseover', function() {
-            $('.mapboxgl-popup.mapboxgl-popup-anchor-bottom').hide();
-            $('.mapboxgl-popup.mapboxgl-popup-anchor-top').hide();
-            var coordinates = marker.geometry.coordinates.slice();
-            var description = marker.properties.description;
+    // Display a map on the web page
+    map = new google.maps.Map(document.getElementById("mapCanvas"), mapOptions);
+    map.setTilt(50);
+    // map.setZoom(5);
 
-            new mapboxgl.Popup()
-                .setLngLat(coordinates)
-                .setHTML(description)
-                .addTo(map);
-        });
+    // Add multiple markers to map
+    var infoWindow = new google.maps.InfoWindow(), marker, i;
+    // var icon = '';
 
-        el.addEventListener('mouseenter', function() {
-            el.style.cursor = 'pointer';
-        });
-
-        // add marker to map
-        new mapboxgl.Marker(el)
-            .setLngLat(marker.geometry.coordinates)
-            .addTo(map);
+    var polyline = new google.maps.Polyline({
+          // strokeColor: '#FF0000',
+          // strokeOpacity: 1,
+          // strokeWeight: 2,
+          map: map,
+          icons: [{
+              icon: {
+                  path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+                  strokeColor:'#0000ff',
+                  fillColor:'#0000ff',
+                  fillOpacity:1
+              },
+              repeat:'50px',
+              path:[]
+          }]
     });
-    
-    var bounds = coordinates.reduce(function (bounds, coord) {
-        return bounds.extend(coord);
-    }, new mapboxgl.LngLatBounds(coordinates[0], coordinates[0]));
+        
+    // var geocoder = new google.maps.Geocoder;
+    // var place_id;
+    // var placesService = new google.maps.places.PlacesService(map);
 
-    map.fitBounds(bounds, {
-        padding: 40
-    });
-    
-    map.on('load', function () {
-        map.addLayer({
-            "id": "route",
-            "type": "line",
-            "source": {
-                "type": "geojson",
-                "data": {
-                    "type": "Feature",
-                    "properties": {},
-                    "geometry": {
-                        "type": "LineString",
-                        "coordinates": coordinates
-                    }
+    // Place each marker on the map
+    for( i = 0; i < markers.length; i++ ) {
+        var position = new google.maps.LatLng(markers[i][1], markers[i][2]);
+        bounds.extend(position);
+        if (i == 0 || (i + 1) == markers.length) {
+            marker = new google.maps.Marker({
+                position: position,
+                map: map,
+                title: markers[i][0],
+                icon: icons[i]
+            });
+            
+            // geocoder.geocode({'location': position}, function(results, status) {
+            //     if (status === google.maps.GeocoderStatus.OK) {
+            //         if (results[1]) {
+            //             // var placesService = new google.maps.places.PlacesService(map);
+            //             placesService.getDetails({placeId: results[1].place_id},
+            //             function(results) {
+            //                 place_id = results.formatted_address;
+            //             });
+            //         }
+            //     }
+            // });
+            
+            // Add info window to marker
+            google.maps.event.addListener(marker, 'click', (function(marker, i) {
+                return function() {
+                    infoWindow.setContent(infoWindowContent[i][0]);
+                    infoWindow.open(map, marker);
                 }
-            },
-            "layout": {
-                "line-join": "round",
-                "line-cap": "round"
-            },
-            "paint": {
-                "line-color": "#0000ff",
-                "line-width": 8
-            }
-        });
+            })(marker, i));
+        }
+        polyline.getPath().push(position);
+    }
+    map.fitBounds(bounds);
+
+    // Set zoom level
+    var boundsListener = google.maps.event.addListener(map, 'idle', function(event) {
+        // map.setZoom(16);
+        google.maps.event.removeListener(boundsListener);
     });
 }
 JS;
