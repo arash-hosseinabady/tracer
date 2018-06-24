@@ -4,8 +4,8 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use kartik\widgets\Select2;
 use app\components\pdp\PersianDatePicker;
+use app\models\Helper;
 use yii\web\View;
-use kartik\spinner\Spinner;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\LocationInfo */
@@ -64,38 +64,19 @@ $this->registerJsFile('/js/mapbox-gl.js', ['position' => View::POS_HEAD]);
 
         <div class="row">
             <div class="col-lg-3">
-                <div class="panel panel-info panel-last-location"
-                     style="display: <?= isset($lastLocationInfo['speed']) ? 'block' : 'none' ?>">
+                <div class="panel panel-info panel-last-location" style="display: <?= isset($lastLocationInfo['speed']) ? 'block' : 'none' ?>">
                     <div class="panel-heading"><?= Yii::t('app', 'Last location info') ?></div>
                     <div class="panel-body">
-                        <p><?= Yii::t('app', 'Speed') ?> : <span
-                                    id="last-location-speed"><?= isset($lastLocationInfo['speed']) ? $lastLocationInfo['speed'] : '' ?></span>
-                        </p>
-                        <p><?= Yii::t('app', 'Course') ?> : <span
-                                    id="last-location-course"><?= isset($lastLocationInfo['course']) ? $lastLocationInfo['course'] : '' ?></span>
-                        </p>
-                        <p><?= Yii::t('app', 'Time') ?> : <span
-                                    id="last-location-time"><?= isset($lastLocationInfo['time']) ? $lastLocationInfo['time'] : '' ?></span>
-                        </p>
-                        <p><?= Yii::t('app', 'Address') ?> : <span
-                                    id="last-location-address"><?= isset($lastLocationInfo['address']) ? $lastLocationInfo['address'] : '' ?></span>
-                        </p>
+                        <p><?= Yii::t('app', 'Speed') ?> : <span id="last-location-speed"><?= isset($lastLocationInfo['speed']) ? $lastLocationInfo['speed'] : '' ?></span></p>
+                        <p><?= Yii::t('app', 'Course') ?> : <span id="last-location-course"><?= isset($lastLocationInfo['course']) ? $lastLocationInfo['course'] : '' ?></span></p>
+                        <p><?= Yii::t('app', 'Time') ?> : <span id="last-location-time"><?= isset($lastLocationInfo['time']) ? $lastLocationInfo['time'] : '' ?></span></p>
+                        <p><?= Yii::t('app', 'Address') ?> : <span id="last-location-address"><?= isset($lastLocationInfo['address']) ? $lastLocationInfo['address'] : '' ?></span></p>
                     </div>
                 </div>
             </div>
             <div class="col-lg-9">
                 <div id="map_wrapper">
                     <div id="map_canvas" class="mapping"></div>
-                    <div id="load-spin" class="well col-lg-12" style="height: 100%; display: none;direction: ltr">
-                        <div class="col-lg-12" style="margin-top: 250px;"></div>
-                        <?= Spinner::widget([
-                            'preset' => Spinner::LARGE,
-                            'color' => 'blue',
-                            'align' => 'center',
-                            'caption' => 'Loading map &hellip;',
-                        ]) ?>
-                        <div class="clearfix"></div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -118,9 +99,8 @@ $css = <<< CSS
 }
 CSS;
 $this->registerCss($css);
-?>
 
-<script type="text/javascript">
+$js = <<< JS
 var firstDevice;
 var markers = [];
 var infoWindowContent = [];
@@ -132,9 +112,8 @@ var toDate;
 var pointOnMap = [];
 var routeMap = [];
 var map;
-var coordinates = [];
 
-firstDevice = JSON.parse('<?= $firstDeviceInfo ?>');
+firstDevice = $.parseJSON('$firstDeviceInfo');
 
 function loadMap() {
     mapboxgl.accessToken = 'pk.eyJ1IjoiYS1ob3NzZWluYWJhZGkiLCJhIjoiY2ppYmU4aHdwMDFjMDNxdXB1dmptbndkMSJ9.plf7LGhARLDHQWd7JC7rng';
@@ -146,55 +125,9 @@ function loadMap() {
 if (firstDevice.length) {
     loadMap();
     
+    var coordinates = [];
     var i = 0;
-    prepareCoordinates(firstDevice);
-    
-    initMap();
-}
-
-function ajaxTrace()
-{
-    device = $('#<?= $deviceId ?>').val();
-    fromDate = $('#<?= $fromDate ?>').val();
-    toDate = $('#<?= $toDate ?>').val();
-    speed = $('#<?= $speed ?>').val();
-    $('#alert-nodata').hide();
-    if (device) {
-        $('#map_canvas').hide();
-        $('#load-spin').show();
-        $.ajax({
-            type: 'post',
-            data: {device: device, fromDate: fromDate, toDate: toDate, speed: speed},
-            url: "/location-info/trace",
-            success: function(data) {
-                var res = $.parseJSON(data);
-                markers = [];
-                icons = [];
-                infoWindowContent = [];
-                if (res.length) {
-                    prepareCoordinates(res);
-                    if (res[res.length - 1]['speed']) {
-                        $('.panel-last-location').show();
-                    }
-                    $('#last-location-speed').html(res[res.length - 1]['speed']);
-                    $('#last-location-course').html(res[res.length - 1]['course']);
-                    $('#last-location-time').html(res[res.length - 1]['time']);
-                    $('#last-location-address').html(res[res.length - 1]['address']);
-
-                    loadMap();
-                    initMap();
-                } else {
-                    $('#map_canvas').show();
-                    $('#load-spin').hide();
-                    $('#alert-nodata').show();
-                }
-            }
-        });
-    }
-}
-
-function prepareCoordinates(pointList) {
-    pointList.forEach(function(value, index) {
+    $.each(firstDevice, function(index, value) {
         if (index == 0 || (index + 1) == firstDevice.length) {
             pointOnMap[index] = {
                 "type": "Feature",
@@ -217,11 +150,8 @@ function prepareCoordinates(pointList) {
             routeMap[i] = {
                 "type": "Feature",
                 "geometry": {
-                    "type": "LineString",
-                    "coordinates": [
-                        [pointList[index - 1]['longitude'], pointList[index - 1]['latitude']],
-                        [value['longitude'], value['latitude']]
-                    ]
+                    "type": "Point",
+                    "coordinates": [value['longitude'], value['latitude']]
                 },
                 "properties": {
                     "LTYPE": "MFG"
@@ -230,9 +160,79 @@ function prepareCoordinates(pointList) {
             i += 1;
         }
 
-
         coordinates[index] = [value['longitude'], value['latitude']];
     });
+    
+    initMap();
+}
+
+$('#search').on('click', function(e) {
+    e.preventDefault();
+    $('#device-selection').hide();
+    if ($('#$deviceId').val()) {
+        ajaxTrace();
+    } else {
+        $('#device-selection').show();
+    }
+});
+
+function ajaxTrace()
+{
+    device = $('#$deviceId').val();
+    fromDate = $('#$fromDate').val();
+    toDate = $('#$toDate').val();
+    speed = $('#$speed').val();
+    $('#alert-nodata').hide();
+    if (device) {
+        $.ajax({
+            type: 'post',
+            data: {device: device, fromDate: fromDate, toDate: toDate, speed: speed},
+            url: "/location-info/trace",
+            success: function(data) {
+                var res = $.parseJSON(data);
+                markers = [];
+                icons = [];
+                infoWindowContent = [];
+                if (res.length) {
+                    $.each(res, function(index, value) {
+                        if (index == 0 || (index + 1) == firstDevice.length) {
+                            pointOnMap[index] = {
+                                "type": "Feature",
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [value['longitude'], value['latitude']]
+                                },
+                                "properties": {
+                                    "description": '<div class="info_content">' +
+                                    '<br>' +
+                                    '<p>address: ' + value['address'] + '</p>' +
+                                    '<p>time: ' + value['created_at'] + '</p>' +
+                                    '</div>',
+                                    "icon": "car",
+                                    "device_id": value['id'],
+                                    "iconImg": value['icon']
+                                }
+                            };
+                        }
+                
+                        coordinates[index] = [value['longitude'], value['latitude']];
+                    });
+                    if (res[res.length - 1]['speed']) {
+                        $('.panel-last-location').show();
+                    }
+                    $('#last-location-speed').html(res[res.length - 1]['speed']);
+                    $('#last-location-course').html(res[res.length - 1]['course']);
+                    $('#last-location-time').html(res[res.length - 1]['time']);
+                    $('#last-location-address').html(res[res.length - 1]['address']);
+                    // google.maps.event.addDomListener(window, 'load', initMap);
+                    loadMap();
+                    initMap();
+                } else {
+                    $('#alert-nodata').show();
+                }
+            }
+        });
+    }
 }
 
 function initMap() {
@@ -275,59 +275,44 @@ function initMap() {
         return bounds.extend(coord);
     }, new mapboxgl.LngLatBounds(coordinates[0], coordinates[0]));
 
+    map.fitBounds(bounds, {
+        padding: 40
+    });
+    
     map.on('load', function () {
+        map.addLayer({
+            "id": "route",
+            "type": "line",
+            "source": {
+                "type": "geojson",
+                "data": {
+                    "type": "Feature",
+                    "properties": {},
+                    "geometry": {
+                        "type": "LineString",
+                        "coordinates": coordinates
+                    }
+                }
+            },
+            "layout": {
+                "line-join": "round",
+                "line-cap": "round"
+            },
+            "paint": {
+                "line-color": "#0000ff",
+                "line-width": 4
+            }
+        });
+        console.log({
+                "type": "FeatureCollection",
+                "features": routeMap
+            });
         map.addSource('mapDataSourceId', {
             type: "geojson",
             data: {
                 "type": "FeatureCollection",
                 "features": routeMap
             }
-        });
-        
-        map.addLayer({
-            'id': 'route',
-            'type': 'line',
-            'source': 'mapDataSourceId',
-            'filter': ['==', '$type', 'LineString'],
-            'layout': {
-              'line-join': 'round',
-              'line-cap': 'round'
-            },
-            'paint': {
-              'line-color': '#3cb2d0',
-              'line-width': {
-                'base': 4,
-                'stops': [
-                  [1, 0.5],
-                  [8, 3],
-                  [15, 6],
-                  [22, 8]
-                ]
-              }
-            }
-        });
-        
-//        map.addLayer({
-//            'id': 'location',
-//            'type': 'circle',
-//            'source': 'mapDataSourceId',
-//            'filter': ['==', '$type', 'Point'],
-//            'paint': {
-//              'circle-color': 'green',
-//              'circle-radius': {
-//                'base': 1.5,
-//                'stops': [
-//                  [1, 1],
-//                  [6, 3],
-//                  [10, 8],
-//                  [22, 12]
-//                ]
-//              }
-//            }
-//        });
-
-        map.fitBounds(bounds, {
-            padding: 40
         });
         
         var url = '/img/arrow.png';
@@ -354,18 +339,6 @@ function initMap() {
           });
     });
 }
-</script>
-
-<?php
-$js = <<< JS
-$('#search').on('click', function(e) {
-    e.preventDefault();
-    $('#device-selection').hide();
-    if ($('#$deviceId').val()) {
-        ajaxTrace();
-    } else {
-        $('#device-selection').show();
-    }
-});
 JS;
-$this->registerJs($js, View::POS_END);
+
+$this->registerJs($js, \yii\web\View::POS_END);
