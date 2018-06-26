@@ -124,7 +124,7 @@ class LocationInfoController extends BaseController
                         'device_id' => $value->device_id,
                         'latitude' => $value->latitude,
                         'longitude' => $value->longitude,
-                        'time' => $value->timeFormatted . ' ' . $value->dateCreatedAt,
+                        'time' => $value->createdAt,
                         'speed' => $value->speed,
 //                        'icon' => ($value->speed > $value->device->config['speed']) ? '/img/markers/red_MarkerA.png' : '/img/markers/green_MarkerA.png',
                         'icon' => $icon,
