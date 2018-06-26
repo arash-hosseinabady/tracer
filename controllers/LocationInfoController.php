@@ -73,6 +73,7 @@ class LocationInfoController extends BaseController
                 ->andFilterWhere(['>=', 'created_at', Helper::getUnixTimeFromShamsiDate($postData['fromDate'])])
                 ->andFilterWhere(['<=', 'created_at', Helper::getUnixTimeFromShamsiDate($postData['toDate'])])
                 ->orderBy(['id' => SORT_DESC])
+                ->limit(50)
                 ->all();
 
             if ($locationInfo) {
